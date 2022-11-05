@@ -14,8 +14,10 @@ func myMiddleware(ctx iris.Context) {
 func main() {
 	app := iris.New()
 	app.Use(myMiddleware)
-	app.Handle("GET", "/", func(ctx iris.Context) {
-		ctx.HTML("Hello world")
+	app.HandleDir("/assets", "./assets")
+	app.RegisterView(iris.HTML("./views", ".html"))
+	app.Get("/", func(ctx iris.Context) {
+		ctx.View("home/index.html")
 	})
 	app.Run(iris.Addr(":8080"), iris.WithoutServerError(iris.ErrServerClosed))
 }
