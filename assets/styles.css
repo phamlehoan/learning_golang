@@ -1,0 +1,15 @@
+h1 {
+  font-family: 'Times New Roman', Times, serif ;
+  font-size: 2.4em;
+  color: #000;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  margin: 10px 0;
+}
+span {
+  color:rgba(21, 19, 19, 0.387)
+}
+div {
+  margin: auto;
+  width: 500px;
+}
