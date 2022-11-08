@@ -6,13 +6,24 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-func myMiddleware(ctx iris.Context) {
+func before(ctx iris.Context) {
 	ctx.Application().Logger().Infof("Người dùng đã request: %s", ctx.Request().RequestURI)
+	// gọi method Next để chuyển sang middleware tiếp theo
 	ctx.Next()
 }
 
+func after(ctx iris.Context) {
+	result := ctx.Values().Get("main")
+	ctx.Application().Logger().Infof("%s", result)
+	ctx.Application().Logger().Infof("Xử lý xong request")
+}
+
+// Hàm xử lý chính cũng được coi là một middleware
 func homeHandler(ctx iris.Context) {
 	ctx.View("home/index.html")
+	// Truyền biến main sang middleware tiếp theo
+	ctx.Values().Set("main", "received from main handler")
+	ctx.Next()
 }
 
 func listProductsHandler(ctx iris.Context) {
@@ -47,10 +58,9 @@ func editProductHandler(ctx iris.Context) {
 
 func main() {
 	app := iris.New()
-	app.Use(myMiddleware)
 	app.HandleDir("/assets", "./assets")
 	app.RegisterView(iris.HTML("./views", ".html"))
-	app.Get("/", homeHandler)
+	app.Get("/", before, homeHandler, after)
 	app.PartyFunc("/products", func(products iris.Party) {
 		products.Get("/", listProductsHandler)
 		products.Get("/{productId}", showProductHandler)
