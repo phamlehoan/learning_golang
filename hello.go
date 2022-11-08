@@ -56,11 +56,18 @@ func editProductHandler(ctx iris.Context) {
 	ctx.View("products/edit.html")
 }
 
+func apiHandler(ctx iris.Context) {
+	ctx.JSON(iris.Map{
+		"msg": "Hello world!",
+	})
+}
+
 func main() {
 	app := iris.New()
 	app.HandleDir("/assets", "./assets")
 	app.RegisterView(iris.HTML("./views", ".html"))
 	app.Get("/", before, homeHandler, after)
+	app.Get("/api", apiHandler)
 	app.PartyFunc("/products", func(products iris.Party) {
 		products.Get("/", listProductsHandler)
 		products.Get("/{productId}", showProductHandler)
